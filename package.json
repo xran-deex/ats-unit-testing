@@ -1,0 +1,18 @@
+{
+  "name": "ats-unit-testing",
+  "version": "1.0.0",
+  "description": "Simple unit testing library for ATS",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Randy Valis",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+http://ubuntu-netfu.lan:3000/randy.valis/ats-unit-testing.git"
+  }
+}
