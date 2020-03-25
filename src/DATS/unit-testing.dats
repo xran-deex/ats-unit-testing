@@ -12,7 +12,8 @@ vtypedef test_struct =
 vtypedef context_struct =
     @{
         passed=bool,
-        msg=strptr
+        msg=strptr,
+        assert_called=bool
     }
 
 vtypedef suite_struct =
@@ -60,6 +61,7 @@ implement {a:vt@ype} assert_equals0(ctx, e, a) = () where {
     val () = free(msg2)
     val () = free(c.msg)
     val () = c.msg := msg3
+    val () = c.assert_called := true
     prval() = fold@(ctx)
 }
 
@@ -69,6 +71,7 @@ implement {a:vt@ype} assert_equals0_msg(ctx, e, a, msg) = () where {
     val () = c.passed := equals
     val () = free(c.msg)
     val () = c.msg := copy msg
+    val () = c.assert_called := true
     prval() = fold@(ctx)
 }
 
@@ -91,6 +94,7 @@ implement {a} assert_equals1(ctx, e, a) = () where {
     val () = free(msg2)
     val () = free(c.msg)
     val () = c.msg := msg3
+    val () = c.assert_called := true
     prval() = fold@(ctx)
 }
 
@@ -100,12 +104,14 @@ implement {a} assert_equals1_msg(ctx, e, a, msg) = () where {
     val () = c.passed := equals
     val () = free(c.msg)
     val () = c.msg := copy msg
+    val () = c.assert_called := true
     prval() = fold@(ctx)
 }
 
 implement{} assert_true(ctx, b) = () where {
     val+@C(c) = ctx
     val () = c.passed := b
+    val () = c.assert_called := true
     prval() = fold@(ctx)
 }
 
@@ -114,6 +120,7 @@ implement{} assert_true_msg(ctx, b, msg) = () where {
     val () = c.passed := b
     val () = free(c.msg)
     val () = c.msg := copy msg
+    val () = c.assert_called := true
     prval() = fold@(ctx)
 }
 
@@ -190,13 +197,18 @@ implement{} run_tests(runner) = () where {
                     val ctx = C(_)
                     val C(c) = ctx
                     val () = c.passed := false
+                    val () = c.assert_called := false
                     val () = c.msg := copy ""
                     prval () = fold@(ctx)
                     val () = t.test(ctx)
                     val+@C(c) = ctx
                     val () = if c.passed
                              then println!(t.description, ": \33[32mpassed\33[0m")
-                             else println!(t.description, ": \33[31mfailed\33[0m\tError: \33[31m", c.msg, "\33[0m")//, "Loc: ", $mylocation)
+                             else () where {
+                                 val () = if c.assert_called
+                                          then println!(t.description, ": \33[31mfailed\33[0m\tError: \33[31m", c.msg, "\33[0m")//, "Loc: ", $mylocation)
+                                          else println!(t.description, ": \33[31mfailed\33[0m\tError: \33[31mNo assertions made\33[0m")//, "Loc: ", $mylocation)
+                             }
                     val () = case+ c.passed of
                              | true => e2.num_passed := e2.num_passed + 1
                              | false => e2.num_failed := e2.num_failed + 1

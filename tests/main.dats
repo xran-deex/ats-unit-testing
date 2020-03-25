@@ -49,6 +49,9 @@ implement main(argc, argv) = 0 where {
             val y = 2.0
         }
     }
+    val () = add_test(s, "test6", fnc) where {
+        fn fnc(c: !Context): void = ()
+    }
 
     val () = add_suite(r, s)
     val () = run_tests(r)
