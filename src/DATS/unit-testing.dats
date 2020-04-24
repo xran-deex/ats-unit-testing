@@ -221,7 +221,10 @@ implement{} run_tests(runner) = () where {
             val () = s.num_failed := e.num_failed
             val () = s.num_passed := e.num_passed
             val () = println!("\n\tTotal passed: \33[32m", s.num_passed, "\33[0m")
-            val () = println!("\tTotal failed: \33[31m", s.num_failed, "\33[0m")
+            val () = if s.num_failed > 0 then
+                        println!("\tTotal failed: \33[31m", s.num_failed, "\33[0m")
+                     else
+                        println!("\tTotal failed: \33[32m", s.num_failed, "\33[0m")
             prval() = fold@(suite)
         }
     }
