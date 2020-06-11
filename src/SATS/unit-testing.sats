@@ -7,7 +7,7 @@ absvt@ype Test
 absvt@ype Suite
 absvt@ype Runner
 
-typedef test_func = (!Context) -<fun1> void
+typedef test_func = (&Context) -<fun1> void
 
 fn{a:vt@ype} assert_equals0(c: !Context, expected: &a, actual: &a): void
 fn{a:vt@ype} assert_equals0_msg(c: !Context, expected: &a, actual: &a, msg: string): void

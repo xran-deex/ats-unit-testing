@@ -7,13 +7,13 @@ implement tostring<double>(x) = copy(tostring_double(x))
 
 fn add(x: int, y: int): int = x + y
 
-fn test1(c: !Context): void = () where {
+fn test1(c: &Context): void = () where {
     val x = "hello"
     val y = "hellx"
     val () = assert_equals1_msg<string>(c, x, y, "Strings don't match")
 }
 
-fn test2(c: !Context): void = () where {
+fn test2(c: &Context): void = () where {
     var x = copy "hello"
     var y = copy "hellx"
     val () = assert_equals0<Strptr1>(c, x, y)
@@ -21,14 +21,14 @@ fn test2(c: !Context): void = () where {
     val () = free(y)
 }
 
-fn test3(c: !Context): void = () where {
+fn test3(c: &Context): void = () where {
     val x: int = 6
     val y: int = 7
     val z = add(x, y)
     val () = assert_equals1<int>(c, 12, z)
 }
 
-fn test4(c: !Context): void = () where {
+fn test4(c: &Context): void = () where {
     val x = 6
     val y = 7
     val z = add(x, y)
@@ -44,13 +44,13 @@ implement main(argc, argv) = 0 where {
     val () = add_test(s, "test3", test3)
     val () = add_test(s, "test4", test4)
     val () = add_test(s, "test5", fnc) where {
-        fn fnc(c: !Context): void = assert_equals1<double>(c, x, y) where {
+        fn fnc(c: &Context): void = assert_equals1<double>(c, x, y) where {
             val x = 2.0
             val y = 2.0
         }
     }
     val () = add_test(s, "test6", fnc) where {
-        fn fnc(c: !Context): void = ()
+        fn fnc(c: &Context): void = ()
     }
 
     val () = add_suite(r, s)

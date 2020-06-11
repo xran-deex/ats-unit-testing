@@ -38,11 +38,12 @@ assume Context = context_vt
 
 implement tostring<Strptr1>(s) = copy s
 implement tostring<int>(s) = tostrptr_int s
+implement tostring<string>(s) = copy s
 
 // weird, but eq_strptr_strptr isn't found
 implement gequal_ref_ref<Strptr1>(a, b) = a = $UNSAFE.castvwtp1{string}(b)
 
-implement {a:vt@ype} assert_equals0(ctx, e, a) = () where {
+implement {a} assert_equals0(ctx, e, a) = () where {
     val+@C(c) = ctx
     val equals = gequal_ref_ref<a>(e, a)
     val () = c.passed := equals
@@ -65,7 +66,7 @@ implement {a:vt@ype} assert_equals0(ctx, e, a) = () where {
     prval() = fold@(ctx)
 }
 
-implement {a:vt@ype} assert_equals0_msg(ctx, e, a, msg) = () where {
+implement {a} assert_equals0_msg(ctx, e, a, msg) = () where {
     val+@C(c) = ctx
     val equals = gequal_ref_ref<a>(e, a)
     val () = c.passed := equals
@@ -194,7 +195,7 @@ implement{} run_tests(runner) = () where {
             val () = list_vt_foreach_env<Test><env>(s.tests, e) where {
                 implement list_vt_foreach$fwork<Test><env>(test, e2) = () where {
                     val+@T(t) = test
-                    val ctx = C(_)
+                    var ctx = C(_)
                     val C(c) = ctx
                     val () = c.passed := false
                     val () = c.assert_called := false
