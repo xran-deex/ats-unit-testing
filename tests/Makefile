@@ -21,7 +21,6 @@ all: $(EXEDIR)/$(APP)
 
 $(EXEDIR)/$(APP): $(OBJS)
 	$(dir_guard)
-	+make -C ..
 	$(CC) $(CFLAGS) -o $(EXEDIR)/$(APP) $(OBJS) $(LIBS)
 
 .SECONDEXPANSION:
@@ -38,7 +37,6 @@ RMF=rm -f
 clean: 
 	$(RMF) $(EXEDIR)/$(APP)
 	$(RMF) $(OBJS)
-	+make -C .. clean
 
 run:
 	./target/tests

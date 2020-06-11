@@ -39,3 +39,8 @@ RMF=rm -f
 clean: 
 	$(RMF) $(EXEDIR)/$(APP)
 	$(RMF) $(OBJS)
+	+make -C tests clean
+
+test:
+	+make -C tests
+	+make -C tests run
