@@ -4,7 +4,7 @@ ATSOPT=$(PATSHOME)/bin/patsopt
 ATSFLAGS=-IATS node_modules -IATS ../node_modules
 CFLAGS=-DATS_MEMALLOC_LIBC -D_DEFAULT_SOURCE -I . -I $(PATSHOME)/ccomp/runtime -I $(PATSHOME) -O3 -g
 
-LIBS=-latslib -L ../target 
+LIBS=-L $(PATSHOME)/ccomp/atslib/lib -latslib -L ../target 
 
 APP     = tests
 EXEDIR  = target
@@ -39,4 +39,4 @@ clean:
 	$(RMF) $(OBJS)
 
 run:
-	./target/tests
+	LD_LIBRARY_PATH=../target ./target/tests
