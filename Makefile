@@ -32,7 +32,12 @@ all: $(EXEDIR)/$(APP)
 
 $(EXEDIR)/$(APP): $(OBJS)
 	$(dir_guard)
+ifdef STATICLIB
 	ar rcs $@ $(OBJS)
+endif
+ifndef STATICLIB
+	$(CC) $(CFLAGS) -o $(EXEDIR)/$(APP) $(OBJS) $(LIBS)
+endif
 
 .SECONDEXPANSION:
 $(OBJDIR)/%.o: %.c
