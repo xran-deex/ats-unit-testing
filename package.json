@@ -13,6 +13,6 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+http://ubuntu-netfu.lan:3000/randy.valis/ats-unit-testing.git"
+    "url": "git+https://github.com/xran-deex/ats-unit-testing.git"
   }
 }
