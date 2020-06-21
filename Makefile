@@ -2,12 +2,21 @@ ATSCC=$(PATSHOME)/bin/patscc
 ATSOPT=$(PATSHOME)/bin/patsopt
 
 ATSFLAGS=-IATS node_modules -IATS ../node_modules
-CFLAGS=-DATS_MEMALLOC_LIBC -D_DEFAULT_SOURCE -I $(PATSHOME)/ccomp/runtime -I $(PATSHOME) -O3 -fpic
+CFLAGS=-DATS_MEMALLOC_LIBC -D_DEFAULT_SOURCE -I $(PATSHOME)/ccomp/runtime -I $(PATSHOME) -O3
 
-LIBS=-L $(HOME)/armlibs -L node_modules/shared_vt/target -lpthread -latslib -shared
+LIBS=-L $(PATSHOME)/ccomp/atslib/lib -latslib
 
 APP     = libats-unit-testing.a
+ifndef STATICLIB
+	CFLAGS+=-fpic
+	LIBS+=-shared
+	APP     = libats-unit-testing.so
+endif
+
 EXEDIR  = target
+ifdef OUTDIR
+	EXEDIR = $(OUTDIR)
+endif
 SRCDIR  = src
 OBJDIR  = .build
 vpath %.dats src
