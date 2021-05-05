@@ -1,10 +1,11 @@
 ATSCC=$(PATSHOME)/bin/patscc
 ATSOPT=$(PATSHOME)/bin/patsopt
 
-ATSFLAGS=-IATS node_modules -IATS ../node_modules
-CFLAGS=-DATS_MEMALLOC_LIBC -D_DEFAULT_SOURCE -I $(PATSHOME)/ccomp/runtime -I $(PATSHOME) -O3
+ATSFLAGS+=-IATS src
+CFLAGS+=-DATS_MEMALLOC_LIBC -D_DEFAULT_SOURCE -I $(PATSHOME)/ccomp/runtime -I $(PATSHOME) -O3 -I src
 
-LIBS=-L $(PATSHOME)/ccomp/atslib/lib -latslib
+LDFLAGS+=-L $(PATSHOME)/ccomp/atslib/lib
+LIBS+=-latslib
 
 APP     = libats-unit-testing.a
 ifndef STATICLIB

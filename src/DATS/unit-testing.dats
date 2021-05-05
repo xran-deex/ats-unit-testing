@@ -2,6 +2,8 @@
 #define ATS_DYNLOADFLAG 0
 staload "libats/SATS/linmap_list.sats"
 
+staload "./../SATS/unit-testing.sats"
+
 vtypedef test_struct =
     @{
         description=string,

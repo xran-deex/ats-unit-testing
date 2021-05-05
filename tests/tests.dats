@@ -1,6 +1,8 @@
 #include "share/atspre_define.hats"
 #include "share/atspre_staload.hats"
-#include "./../ats-unit-testing.hats"
+#include "ats-unit-testing.hats"
+
+staload $UT
 
 implement gequal_ref_ref<strptr>(x, y) = compare_strptr_strptr(x,y) = 0
 implement tostring<double>(x) = copy(tostring_double(x))
