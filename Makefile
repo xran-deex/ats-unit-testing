@@ -1,61 +1,52 @@
 ATSCC=$(PATSHOME)/bin/patscc
 ATSOPT=$(PATSHOME)/bin/patsopt
 
-ATSFLAGS+=-IATS src
+ATSFLAGS+=
 CFLAGS+=-DATS_MEMALLOC_LIBC -D_DEFAULT_SOURCE -I $(PATSHOME)/ccomp/runtime -I $(PATSHOME) -O3 -I src
-
 LDFLAGS+=-L $(PATSHOME)/ccomp/atslib/lib
 LIBS+=-latslib
 
-APP     = libats-unit-testing.a
-ifndef STATICLIB
-	CFLAGS+=-fpic
-	LIBS+=-shared
-	APP     = libats-unit-testing.so
-endif
-
-EXEDIR  = target
-ifdef OUTDIR
-	EXEDIR = $(OUTDIR)
-endif
-SRCDIR  = src
-OBJDIR  = .build
+NAME := libats-unit-testing
+SNAME   :=  $(NAME).a
+DNAME   :=  $(NAME).so
+SRCDIR  := src
 vpath %.dats src
 vpath %.dats src/DATS
 vpath %.sats src/SATS
-dir_guard=@mkdir -p $(@D)
 SRCS    := $(shell find $(SRCDIR) -name '*.dats' -type f -exec basename {} \;)
-OBJS    := $(patsubst %.dats,$(OBJDIR)/%.o,$(SRCS))
+SDIR    :=  build-static
+SOBJ    := $(patsubst %.dats,$(SDIR)/%.o,$(SRCS))
+DDIR    :=  build-shared
+DOBJ    := $(patsubst %.dats,$(DDIR)/%.o,$(SRCS))
 
-.PHONY: clean setup
+.PHONY: all clean fclean re 
 
-all: $(EXEDIR)/$(APP)
+all: $(SNAME) $(DNAME)
 
-$(EXEDIR)/$(APP): $(OBJS)
-	$(dir_guard)
-ifdef STATICLIB
-	ar rcs $@ $(OBJS)
-endif
-ifndef STATICLIB
-	$(CC) $(CFLAGS) -o $(EXEDIR)/$(APP) $(OBJS) $(LIBS)
-endif
+$(SNAME): $(SOBJ)
+	$(AR) $(ARFLAGS) $@ $^
 
-.SECONDEXPANSION:
-$(OBJDIR)/%.o: %.c
-	$(dir_guard)
-	$(CC) $(CFLAGS) -c $< -o $(OBJDIR)/$(@F) 
+$(DNAME): CFLAGS += -fPIC
+$(DNAME): LDFLAGS += -shared
+$(DNAME): $(DOBJ)
+	$(CC) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
-$(OBJDIR)/%.c: %.dats
-	$(dir_guard)
-	$(ATSOPT) $(ATSFLAGS) -o $(OBJDIR)/$(@F) -d $<
+$(SDIR)/%.o: %.c | $(SDIR)
+	$(CC) $(CFLAGS) -o $@ -c $< $(LDFLAGS) $(LIBS)
 
-RMF=rm -f
+$(DDIR)/%.o: %.c | $(DDIR)
+	$(CC) $(CFLAGS) -o $@ -c $<
 
-clean: 
-	$(RMF) $(EXEDIR)/$(APP)
-	$(RMF) $(OBJS)
-	+make -C tests clean
+%.c: %.dats
+	$(ATSOPT) $(ATSFLAGS) -o $(@F) -d $<
 
-test:
-	+make -C tests
-	+make -C tests run
+$(SDIR) $(DDIR):
+	@mkdir $@
+
+clean:
+	$(RM) -r $(SDIR) $(DDIR)
+
+fclean: clean
+	$(RM) $(SNAME) $(DNAME)
+
+re: fclean all
